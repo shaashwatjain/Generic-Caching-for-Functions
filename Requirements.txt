@@ -1,0 +1,8 @@
+LRU_Cache
+
+1) Make a class lru_cache.
+2) Get the types of the parameters and the return types of the target function Compile Time.
+3) How to do Hashing of types in tuple. //https://github.com/goldsborough/lru-cache
+4) Decorator pattern -> To keep the same name of the function across the client implementation
+5) Basic lru eviction
+6) Lookup before the call
