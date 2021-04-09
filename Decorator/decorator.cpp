@@ -11,7 +11,7 @@ Decorator::~Decorator()
 {
 }
 
-void Decorator::operation()
+int Decorator::operation(int arg)
 {
-	pc_->operation();
+	pc_->operation(arg);
 }

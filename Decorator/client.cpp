@@ -12,16 +12,20 @@ int main()
 	//delete pc;
 	
 	pc = new Concrete_Component();
-	pc->operation();
+	cout << pc->operation(1) << endl;  // Without caching
 	cout << "--------------------------------\n";
 	
 	//new Decorator(); // NO; abstract aclass
 	pc = new Concrete_Decorator(pc);
-	pc->operation();
-	
+	// With caching
+    pc->operation(1); 
+    pc->operation(2); 
+    pc->operation(2); 
+    pc->operation(3); 
+	pc->operation(1); 
 	cout << "--------------------------------\n";
-	pc = new Concrete_Decorator1(pc);
-	pc->operation();
+	// pc = new Concrete_Decorator1(pc);
+	// pc->operation();
 	
 }
 

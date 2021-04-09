@@ -8,8 +8,10 @@ Concrete_Decorator1::Concrete_Decorator1(Component *pc)
 }
 
 
-void Concrete_Decorator1::operation() 
+int Concrete_Decorator1::operation(int arg) 
 {
 	cout << "decorated by message from concrete decorator one\n";
-	Decorator::operation();
+	Decorator::operation(arg);
+    cout << "Test-2" << endl;
+    return 0;
 }

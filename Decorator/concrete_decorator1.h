@@ -5,6 +5,6 @@ class Concrete_Decorator1 : public Concrete_Decorator
 {
 	public:
 	Concrete_Decorator1(Component *pc);
-	virtual void operation() override;
+	virtual int operation(int) override;
 };
 #endif

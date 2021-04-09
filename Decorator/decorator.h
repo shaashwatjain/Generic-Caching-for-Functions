@@ -5,7 +5,7 @@ class Decorator : public Component
 {
 	public:
 	Decorator(Component *pc);
-	virtual void operation();
+	virtual int operation(int);
 	virtual ~Decorator() = 0;
 	private:
 	Component *pc_;

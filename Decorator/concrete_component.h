@@ -5,7 +5,7 @@
 class Concrete_Component : public Component
 {
 	public:
-	virtual void operation() override;
+	virtual int operation(int) override;
 };
 #endif
 

@@ -5,6 +5,6 @@ class Component
 {
 	public:
 	virtual ~Component() = 0;
-	virtual void operation() = 0; // pure virtual
+	virtual int operation(int) = 0; // pure virtual
 };
 #endif
