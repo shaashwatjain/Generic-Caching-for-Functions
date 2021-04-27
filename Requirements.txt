@@ -6,3 +6,17 @@ LRU_Cache
 4) Decorator pattern -> To keep the same name of the function across the client implementation
 5) Basic lru eviction
 6) Lookup before the call
+
+
+---
+
+Milestones:
+1) [DONE] Capturing the user defined functions in a functor (wrapper) and deducing the parameter and return types from the user given function
+2) Creating an unorderd map with the keys as the parameters and the value is a pair of the frequency and the user defined function's return type
+    - The unordered map is a member function of the functor with a private access specified
+3) 
+
+---
+
+Note:
+1) At the moment due the reflection and navie introspection not being a part of C++, we cannot make LRU cache work for recrusive functions
