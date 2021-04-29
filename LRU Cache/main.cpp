@@ -1,6 +1,4 @@
 #include <iostream>
-#include<typeinfo>
-#include<cstdio>
 #include"lru_cache.hpp"
 
 // template<typename R, typename... A>
@@ -28,7 +26,8 @@ int main()
     std::function<decltype(f_float)> x{f_float};
     auto z = lru_cache{y};
     lru_cache{x};
-    z(10);
+    std::cout << z(10) << std::endl;
+    std::cout << z(10) << std::endl;
 
     return 0;
 }
