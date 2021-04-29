@@ -16,7 +16,7 @@ namespace detailed
 struct TupleHasher
 {
     template<typename... T>
-    size_t operator()(const std::tuple<T...>& tup)
+    std::size_t operator()(const std::tuple<T...>& tup)
     {
         size_t hash = 0;
         std::apply(detailed::lazyHasher, std::tuple_cat(std::tuple(0), tup));
