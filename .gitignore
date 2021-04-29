@@ -2,3 +2,4 @@
 **/*.out
 **/settings.json
 **/.vscode/*
+**/roughpad/*
