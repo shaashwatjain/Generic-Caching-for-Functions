@@ -12,9 +12,10 @@ LRU_Cache
 
 Milestones:
 1) [DONE] Capturing the user defined functions in a functor (wrapper) and deducing the parameter and return types from the user given function
-2) Creating an unorderd map with the keys as the parameters and the value is a pair of the frequency and the user defined function's return type
+2) [DONE] Creating an unorderd map with the keys as the parameters and the value is a pair of the frequency and the user defined function's return type
     - The unordered map is a member function of the functor with a private access specified
-3) 
+3) Adding logic to check if the parameters are present in the LRU Cache, if not call the original function and get the output and add it into the cache
+
 
 ---
 
