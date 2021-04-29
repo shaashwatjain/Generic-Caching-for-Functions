@@ -2,12 +2,16 @@
 #include <functional>
 #include <cstddef>
 #include <iostream>
+#include <memory>
 
 #include "lru_utility.hpp"
 
 #ifndef LRU_CACHE_HPP
 #define LRU_CACHE_HPP
 
+
+template<std::size_t N, typename... T>
+using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
 
 template<typename R, typename... Args>
 class lru_cache{
@@ -16,7 +20,7 @@ class lru_cache{
         static_assert(!std::is_void<R>::value,
                   "Return type of the function-to-wrap must not be void!");
     }
-    R operator () (Args... arg_list) {
+    auto operator () (Args... arg_list) {
         auto tuple_ele = std::make_tuple(arg_list...);
         if (cache.find(tuple_ele) != std::end(cache)) {
             std::cout << "Cache Hit!" << std::endl;
@@ -33,7 +37,7 @@ class lru_cache{
     private:
     using counter_t = size_t;
     using Arguments = std::tuple<Args...>;
-    using Values = std::pair<R, counter_t>;
+    using Values = static_switch<std::is_pointer_v<R>, std::pair<R, counter_t>, std::pair<std::shared_ptr<R>, counter_t>>;
     using lru_cache_t = std::unordered_map<Arguments,Values,Internal_LRU::tuple_hasher>;
     std::function<R(Args...)> func_;
     lru_cache_t cache;
