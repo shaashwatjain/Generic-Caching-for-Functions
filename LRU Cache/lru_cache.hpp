@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <functional>
 #include <cstddef>
+#include <iostream>
 
 #include "lru_utility.hpp"
 
