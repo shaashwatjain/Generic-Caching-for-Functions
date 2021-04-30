@@ -11,14 +11,15 @@
 
 
 template<typename R, typename... Args>
-class lru_cache{
-    public:
+class lru_cache {
+  public:
     lru_cache(std::function<R(Args...)> f) : func_{f}, cache{} {
         static_assert(!std::is_void<R>::value,
-                  "Return type of the function-to-wrap must not be void!");
+                      "Return type of the function-to-wrap must not be void!");
     }
     auto operator () (Args... arg_list) {
         auto tuple_ele = std::make_tuple(arg_list...);
+
         if (cache.find(tuple_ele) != std::end(cache)) {
             // std::cout << "Cache Hit!" << std::endl;
             ++cache[tuple_ele].second;
@@ -31,11 +32,19 @@ class lru_cache{
         return cache[tuple_ele].first;
     }
 
-    private:
+    void Flush_Lru() {
+        cache.clear();
+
+        // for(auto it : cache)
+        //     printf("%lld", it.second.second);
+    }
+
+
+  private:
     using counter_t = std::size_t;
     using Arguments = std::tuple<Args...>;
     using Values = std::pair<R, counter_t>;
-    using lru_cache_t = std::unordered_map<Arguments,Values,Internal_LRU::tuple_hasher>;
+    using lru_cache_t = std::unordered_map<Arguments, Values, Internal_LRU::tuple_hasher>;
     std::function<R(Args...)> func_;
     lru_cache_t cache;
 };

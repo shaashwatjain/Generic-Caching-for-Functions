@@ -21,8 +21,7 @@ float f_float(int x, int y) { return 0.f; }
 float test(A u) {return 0.f;}
 // struct X { int f(int x, float y) { return 0; } };
 
-int main()
-{
+int main() {
 
     std::function<decltype(test)> o{test};
     // std::function<decltype(f_float)> x{f_float};
@@ -35,11 +34,15 @@ int main()
     // lru_cache{x};
 
     for (int i = 5000; i < 10000; ++i)
-        f_int(i);
-        // z(i) ;
+        // f_int(i);
+        z(i) ;
+
+    z.Flush_Lru();
+    std::cout << "here" << '\n';
+
     for (int i = 5000; i < 10000; ++i)
-        f_int(i);
-        // z(i) ;
+        // f_int(i);
+        z(i) ;
 
     return 0;
 }
