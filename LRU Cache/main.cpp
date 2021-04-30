@@ -13,21 +13,33 @@
 //     printf("%s\n", typeid(decltype(ret(f))).name());
 // }
 
+class A {int i;};
 
 void f_void() {}
-int f_int(int x) { return 0; }
+long long f_int(int x) { return x * x; }
 float f_float(int x, int y) { return 0.f; }
+float test(A u) {return 0.f;}
 // struct X { int f(int x, float y) { return 0; } };
 
 int main()
 {
 
-    std::function<int(int)> y{f_int};
-    std::function<decltype(f_float)> x{f_float};
+    std::function<decltype(test)> o{test};
+    // std::function<decltype(f_float)> x{f_float};
+    auto p = lru_cache{o};
+
+    // ----------------------
+    std::function<decltype(f_int)> y{f_int};
+    // std::function<decltype(f_float)> x{f_float};
     auto z = lru_cache{y};
-    lru_cache{x};
-    std::cout << z(10) << std::endl;
-    std::cout << z(10) << std::endl;
+    // lru_cache{x};
+
+    for (int i = 5000; i < 10000; ++i)
+        f_int(i);
+        // z(i) ;
+    for (int i = 5000; i < 10000; ++i)
+        f_int(i);
+        // z(i) ;
 
     return 0;
 }
