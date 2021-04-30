@@ -10,9 +10,6 @@
 #define LRU_CACHE_HPP
 
 
-template<std::size_t N, typename... T>
-using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
-
 template<typename R, typename... Args>
 class lru_cache{
     public:
@@ -23,21 +20,21 @@ class lru_cache{
     auto operator () (Args... arg_list) {
         auto tuple_ele = std::make_tuple(arg_list...);
         if (cache.find(tuple_ele) != std::end(cache)) {
-            std::cout << "Cache Hit!" << std::endl;
+            // std::cout << "Cache Hit!" << std::endl;
             ++cache[tuple_ele].second;
             return cache[tuple_ele].first;
         }
 
         cache[tuple_ele] = Values{func_(arg_list...), 1};
-        std::cout << "Cache Miss" << std::endl;
-        std::cout << "Value added to cache" << std::endl;
+        // std::cout << "Cache Miss" << std::endl;
+        // std::cout << "Value added to cache" << std::endl;
         return cache[tuple_ele].first;
     }
 
     private:
-    using counter_t = size_t;
+    using counter_t = std::size_t;
     using Arguments = std::tuple<Args...>;
-    using Values = static_switch<std::is_pointer_v<R>, std::pair<R, counter_t>, std::pair<std::shared_ptr<R>, counter_t>>;
+    using Values = std::pair<R, counter_t>;
     using lru_cache_t = std::unordered_map<Arguments,Values,Internal_LRU::tuple_hasher>;
     std::function<R(Args...)> func_;
     lru_cache_t cache;
