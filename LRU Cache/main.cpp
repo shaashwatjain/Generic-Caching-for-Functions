@@ -13,7 +13,21 @@
 //     printf("%s\n", typeid(decltype(ret(f))).name());
 // }
 
-class A {int i;};
+class A {
+    int i; int b;
+    public:
+    bool operator == (const A& rhs) const {
+        return i == rhs.i && b == rhs.b;
+    }    
+};
+
+template<>
+class std::hash<A> {
+	public:
+    std::size_t operator () (const A& obj) const {
+		return 0;
+    }
+};
 
 void f_void() {}
 long long f_int(int x) { return x * x; }
@@ -23,9 +37,13 @@ float test(A u) {return 0.f;}
 
 int main() {
 
+    A n{}, m{};
+    n = m;
     std::function<decltype(test)> o{test};
     // std::function<decltype(f_float)> x{f_float};
     auto p = lru_cache{o};
+    p(n);
+    p(m);
 
     // ----------------------
     std::function<decltype(f_int)> y{f_int};
