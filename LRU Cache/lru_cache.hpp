@@ -21,14 +21,14 @@ class lru_cache {
         auto tuple_ele = std::make_tuple(arg_list...);
 
         if (cache.find(tuple_ele) != std::end(cache)) {
-            // std::cout << "Cache Hit!" << std::endl;
+            std::cout << "Cache Hit!" << std::endl;
             ++cache[tuple_ele].second;
             return cache[tuple_ele].first;
         }
 
         cache[tuple_ele] = Values{func_(arg_list...), 1};
-        // std::cout << "Cache Miss" << std::endl;
-        // std::cout << "Value added to cache" << std::endl;
+        std::cout << "Cache Miss" << std::endl;
+        std::cout << "Value added to cache" << std::endl;
         return cache[tuple_ele].first;
     }
 
