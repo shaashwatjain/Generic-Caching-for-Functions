@@ -18,7 +18,7 @@ class A {
     public:
     bool operator == (const A& rhs) const {
         return i == rhs.i && b == rhs.b;
-    }    
+    }
 };
 
 template<>
@@ -55,12 +55,44 @@ int main() {
         // f_int(i);
         z(i) ;
 
+    // for flushing (clearing) the cache
     z.Flush_Lru();
     std::cout << "here" << '\n';
 
     for (int i = 5000; i < 10000; ++i)
         // f_int(i);
         z(i) ;
+
+/* ##################################################
+ * # uncomment this to run the computation testcase #
+ * ################################################## */
+    // long long int val;
+    // std::vector<long long int>v;
+    // for (int i = 0; i < 100000; ++i) {
+    //     // f_int(i);
+    //     val = i;
+    //     val <<= 50;
+    //     val += 1e8;
+    //     v.push_back(val);
+    //     z(val);
+    //     // f_int(val);
+    // }
+    // // for(int i =0;i<100;i++)
+    // // {
+    // //     std::cout << v[i]<< '\t';
+    // // }
+    // // std::cout << '\n';
+    //
+    // // z.Flush_Lru();
+    //
+    //
+    // for (int i = 0; i<100000; ++i) {
+    //     // val = i;
+    //     // val<<=50;
+    //     // val+=1e8;
+    //     // f_int(val);
+    //     z(v[i]);
+    // }
 
     return 0;
 }
