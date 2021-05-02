@@ -10,6 +10,8 @@
 #define LRU_CACHE_HPP
 
 
+enum class Policy {LRU, MRU, LFU, MFU};
+
 template<typename R, typename... Args>
 class lru_cache {
   public:
