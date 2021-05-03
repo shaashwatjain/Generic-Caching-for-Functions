@@ -65,8 +65,11 @@ R lru_cache<R, Args...>::operator () (Args... arg_list)
             usage_tracker_.push_back(tuple_ele);
         }
         cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
-        std::cout << "Cache Miss" << std::endl;
-        std::cout << "Value added to cache" << std::endl;
+        
+        #if DEBUG
+            std::cout << "Cache Miss" << std::endl;
+            std::cout << "Value added to cache" << std::endl;
+        #endif
     }
 
     return cache_[tuple_ele].first;
