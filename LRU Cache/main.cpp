@@ -46,6 +46,12 @@ int main() {
     my_cache cached_o{Policy::LRU_CACHE(), o};
     cached_o(n);
     cached_o(m);
+
+    // ----
+
+    cached_o(n);
+    cached_o.flush_cache();
+    cached_o(m);
     // delete p;
     // // ----------------------
     // std::function<decltype(f_int)> y{f_int};
