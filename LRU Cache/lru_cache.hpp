@@ -47,7 +47,7 @@ R lru_cache<R, Args...>::operator () (Args... arg_list)
         std::cout << "Cache Hit!" << std::endl;
         usage_tracker_.erase(list_it_);
         usage_tracker_.push_back(tuple_ele);
-        list_it_ = std::end(usage_tracker_);
+        list_it_ = --std::end(usage_tracker_);
     }
     else {
         // Eviction code
