@@ -1,5 +1,6 @@
 CC = g++
-CPPFLAGS = -Wall -Werror -Ofast -std=c++2a -pedantic -Weffc++ -g
+DEBUG_VAL=1
+CPPFLAGS = -DDEBUG=${DEBUG_VAL} -Wall -Werror -Ofast -std=c++2a -pedantic -Weffc++ -g
 
 all: a.out
 
