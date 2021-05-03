@@ -17,6 +17,7 @@
 class A {
     int i; int b;
     public:
+    A(int i, int b): i{i}, b{b} {}
     bool operator == (const A& rhs) const {
         return i == rhs.i && b == rhs.b;
     }
@@ -38,12 +39,12 @@ float test(A u) {return 0.f;}
 
 int main() {
 
-    A n{}, m{};
-    n = m;
+    A n{1, 2}, m{3, 4};
+    // n = m;
     std::function o{test};
     std::function x{f_float};
     // cache<decltype(o()), > &p {new lru_cache{o}};
-    my_cache cached_o{Policy::LRU_CACHE(), o};
+    my_cache cached_o{Policy::LRU_CACHE(), o, 1};
     cached_o(n);
     cached_o(m);
 
@@ -51,6 +52,7 @@ int main() {
 
     cached_o(n);
     cached_o.flush_cache();
+    cached_o(m);
     cached_o(m);
     // delete p;
     // // ----------------------
