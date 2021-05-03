@@ -20,6 +20,9 @@ class lru_cache {
         explicit lru_cache(std::function<R(Args...)> f, cache_size_t = std::nullopt);
         R operator () (Args...);
         void flush_cache();
+        ~lru_cache() {
+            flush_cache();
+        }
 
 
     private:
@@ -59,7 +62,7 @@ R lru_cache<R, Args...>::operator () (Args... arg_list)
         }
 
         usage_tracker_.push_back(tuple_ele);
-        cache_[tuple_ele] = Values{func_(arg_list...), std::end(usage_tracker_)};
+        cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
         std::cout << "Cache Miss" << std::endl;
         std::cout << "Value added to cache" << std::endl;
     }
