@@ -45,9 +45,9 @@ int main() {
     std::function o{test};
     std::function x{f_float};
     // cache<decltype(o()), > &p {new lru_cache{o}};
-    my_cache cached_o{o, policy::LRU_CACHE(), cache_size::RESTRICTED<2>()};
+    my_cache cached_o{o, policy::LRU_CACHE()};
     // my_cache cached_o{o, policy::LRU_CACHE(), cache_size::RESTRICTED<2>()};
-    // my_cache cached_o{o, policy::MRU_CACHE(), cache_size::RESTRICTED<2>()};
+    // my_cache cached_o{o, policy::MRU_CACHE()};
     // my_cache cached_o{o, policy::MRU_CACHE(), cache_size::RESTRICTED<2>()};
     cached_o(n);  // Miss
     cached_o(m);  // Miss
