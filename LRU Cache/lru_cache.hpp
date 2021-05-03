@@ -20,10 +20,6 @@ class lru_cache {
         explicit lru_cache(std::function<R(Args...)> f, cache_size_t = std::nullopt);
         R operator () (Args...);
         void flush_cache();
-        ~lru_cache() {
-            flush_cache();
-        }
-
 
     private:
         std::function<R(Args...)> func_;
