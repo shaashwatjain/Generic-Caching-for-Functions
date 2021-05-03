@@ -39,29 +39,30 @@ int main() {
 
     A n{}, m{};
     n = m;
-    std::function<decltype(test)> o{test};
-    // std::function<decltype(f_float)> x{f_float};
-    auto p = lru_cache{o};
-    p(n);
-    p(m);
+    std::function o{test};
+    std::function x{f_float};
+    // cache<decltype(o()), > &p {new lru_cache{o}};
+    my_cache obj{Policy::LRU_CACHE(), o};
+    // p(n);
+    // p(m);
+    // delete p;
+    // // ----------------------
+    // std::function<decltype(f_int)> y{f_int};
+    // // std::function<decltype(f_float)> x{f_float};
+    // auto z = lru_cache{y};
+    // // lru_cache{x};
 
-    // ----------------------
-    std::function<decltype(f_int)> y{f_int};
-    // std::function<decltype(f_float)> x{f_float};
-    auto z = lru_cache{y};
-    // lru_cache{x};
+    // for (int i = 5000; i < 10000; ++i)
+    //     // f_int(i);
+    //     z(i) ;
 
-    for (int i = 5000; i < 10000; ++i)
-        // f_int(i);
-        z(i) ;
+    // // for flushing (clearing) the cache
+    // z.Flush_Lru();
+    // std::cout << "here" << '\n';
 
-    // for flushing (clearing) the cache
-    z.Flush_Lru();
-    std::cout << "here" << '\n';
-
-    for (int i = 5000; i < 10000; ++i)
-        // f_int(i);
-        z(i) ;
+    // for (int i = 5000; i < 10000; ++i)
+    //     // f_int(i);
+    //     z(i) ;
 
 /* ##################################################
  * # uncomment this to run the computation testcase #
