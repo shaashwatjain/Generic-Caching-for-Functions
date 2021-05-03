@@ -42,22 +42,28 @@ R lru_cache<R, Args...>::operator () (Args... arg_list)
 {
     const auto tuple_ele = std::make_tuple(arg_list...);
 
+    // Cache Hit
     if (cache_.find(tuple_ele) != std::end(cache_)) {
-        list_it_t &list_it_ = cache_[tuple_ele].second;
-        std::cout << "Cache Hit!" << std::endl;
-        usage_tracker_.erase(list_it_);
-        usage_tracker_.push_back(tuple_ele);
-        list_it_ = --std::end(usage_tracker_);
+        #if DEBUG
+            std::cout << "Cache Hit!" << std::endl;
+        #endif
+        if (cache_size_.has_value()) {
+            list_it_t &list_it_ = cache_[tuple_ele].second;
+            usage_tracker_.erase(list_it_);
+            usage_tracker_.push_back(tuple_ele);
+            list_it_ = --std::end(usage_tracker_);
+        }
     }
     else {
-        // Eviction code
-        if (cache_size_.has_value() && cache_.size() == cache_size_.value()) {
-            list_const_it_t lru_const_it_ = std::begin(usage_tracker_);
-            cache_.erase(*lru_const_it_);  // Eviction by Key
-            usage_tracker_.erase(lru_const_it_);  // Eviction by Iterator
+        if (cache_size_.has_value()) {
+            // Eviction code
+            if (cache_.size() == cache_size_.value()) {
+                list_const_it_t lru_const_it_ = std::begin(usage_tracker_);
+                cache_.erase(*lru_const_it_);  // Eviction by Key
+                usage_tracker_.erase(lru_const_it_);  // Eviction by Iterator
+            }
+            usage_tracker_.push_back(tuple_ele);
         }
-
-        usage_tracker_.push_back(tuple_ele);
         cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
         std::cout << "Cache Miss" << std::endl;
         std::cout << "Value added to cache" << std::endl;
@@ -70,5 +76,7 @@ template<typename R, typename ...Args>
 void lru_cache<R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
-    usage_tracker_.clear();  // Clear the bookkeeping
+
+     // Clear the bookkeeping 
+    if (!cache_size_.has_value()) { usage_tracker_.clear(); }
 }
