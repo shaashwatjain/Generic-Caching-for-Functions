@@ -2,8 +2,6 @@
 #include"cache.hpp"
 #include <chrono>
 
-auto start = std::chrono::high_resolution_clock::now();
-
 // template<typename R, typename... A>
 // R ret(R(*)(A...));
 
@@ -97,6 +95,7 @@ int main() {
     //     // f_int(val);
     //     z(v[i]);
     // }
+    auto start = std::chrono::high_resolution_clock::now();
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = finish - start;
     std::cout << "Elapsed time: " << elapsed.count() << " s\n";
