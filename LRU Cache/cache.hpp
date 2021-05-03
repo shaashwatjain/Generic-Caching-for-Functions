@@ -40,11 +40,12 @@ using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
 template<typename Policy, typename R, typename ...Args>
 class my_cache
 {
-    // TODO
+    // TODO: Add more cache policies
     using selected_cache_t = static_switch<Policy::type, lru_cache<R, Args...>>;
+    using cache_size_t = std::optional<std::size_t>;
     public:
-        explicit my_cache(Policy, std::function<R(Args...)> f) :
-            cache_{f}
+        explicit my_cache(Policy, std::function<R(Args...)> f, cache_size_t cache_size = std::nullopt) :
+            cache_{f, cache_size}
         {
             static_assert(!std::is_void<R>::value,
                         "Return type of the function-to-wrap must not be void!");
