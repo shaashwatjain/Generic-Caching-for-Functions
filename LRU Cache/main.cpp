@@ -40,22 +40,24 @@ float test(A u) {return 0.f;}
 int main() {
     auto start = std::chrono::high_resolution_clock::now();
 
-    A n{1, 2}, m{3, 4};
+    A n{1, 2}, m{3, 4}, l{5, 6};
     // n = m;
     std::function o{test};
     std::function x{f_float};
     // cache<decltype(o()), > &p {new lru_cache{o}};
-    // my_cache cached_o{Policy::LRU_CACHE(), o, 1};
-    my_cache cached_o{Policy::LRU_CACHE(), o};
-    cached_o(n);
-    cached_o(m);
-
+    my_cache cached_o{Policy::LRU_CACHE(), o, 2};
+    // my_cache cached_o{Policy::LRU_CACHE(), o};
+    // my_cache cached_o{Policy::MRU_CACHE(), o};
+    // my_cache cached_o{Policy::MRU_CACHE(), o, 2};
+    cached_o(n);  // Miss
+    cached_o(m);  // Miss
+    cached_o(l);  // Miss
     // ----
-
-    cached_o(n);
+    cached_o(m);  // Miss
+    cached_o(n);  // Hit
     cached_o.flush_cache();
-    cached_o(m);
-    cached_o(m);
+    cached_o(m);  // Miss
+    cached_o(m);  // Hit
     // delete p;
     // // ----------------------
     // std::function<decltype(f_int)> y{f_int};
