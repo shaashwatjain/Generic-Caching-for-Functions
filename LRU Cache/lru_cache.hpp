@@ -53,6 +53,7 @@ class lru_cache {
         void flush_cache()
         {
             cache_.clear();
+            usage_tracker_.clear();
         }
 
 
