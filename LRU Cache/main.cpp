@@ -1,5 +1,5 @@
 #include <iostream>
-#include"lru_cache.hpp"
+#include"cache.hpp"
 
 // template<typename R, typename... A>
 // R ret(R(*)(A...));
