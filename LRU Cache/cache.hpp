@@ -57,7 +57,7 @@ namespace cache_size
 template<int N, typename... T>
 using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
 
-template<typename Policy, typename Cache_Size, typename R, typename ...Args>
+template<typename Policy, typename Cache_Size = cache_size::UNLIMITED, typename R = int, typename ...Args>
 class my_cache
 {
     // TODO: Add more cache policies
@@ -66,7 +66,7 @@ class my_cache
                                            mru_cache<Cache_Size, R, Args...>
                                            >;
     public:
-        explicit my_cache(std::function<R(Args...)> f, Policy, Cache_Size&& obj) :
+        explicit my_cache(std::function<R(Args...)> f, Policy, Cache_Size&& obj = Cache_Size()) :
             cache_(f, std::move(obj))
         {
             static_assert(!std::is_void<R>::value,
