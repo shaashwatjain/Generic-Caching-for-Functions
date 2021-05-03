@@ -6,10 +6,11 @@
 #include <iostream>
 #include <memory>
 
+
 #include "lru_cache.hpp"
 #include "mru_cache.hpp"
 
-namespace Policy
+namespace policy
 {
     struct LRU_CACHE
     {
@@ -33,25 +34,43 @@ namespace Policy
 
 } // namespace Policy
 
+namespace cache_size
+{
+    struct UNLIMITED
+    {
+        enum { type = 0 };
+    };
+
+    template<std::size_t Size>
+    struct RESTRICTED
+    {
+        enum { cache_size_ = Size, type = 1 };
+        RESTRICTED()
+        {
+            static_assert(Size > 0,
+                          "Size of cache must be greater than 0");
+        }
+    };
+}
+
 
 template<int N, typename... T>
 using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
 
-template<typename Policy, typename R, typename ...Args>
+template<typename Policy, typename Cache_Size = cache_size::UNLIMITED, typename R = int, typename ...Args>
 class my_cache
 {
     // TODO: Add more cache policies
     using selected_cache_t = static_switch<Policy::type,
-                                           lru_cache<R, Args...>,
-                                           mru_cache<R, Args...>
+                                           lru_cache<Cache_Size, R, Args...>,
+                                           mru_cache<Cache_Size, R, Args...>
                                            >;
-    using cache_size_t = std::optional<std::size_t>;
     public:
-        explicit my_cache(Policy, std::function<R(Args...)> f, cache_size_t cache_size = std::nullopt) :
-            cache_{f, cache_size}
+        explicit my_cache(std::function<R(Args...)> f, Policy, Cache_Size&& obj = Cache_Size()) :
+            cache_(f, std::move(obj))
         {
             static_assert(!std::is_void<R>::value,
-                        "Return type of the function-to-wrap must not be void!");
+                          "Return type of the function-to-wrap must not be void!");
         }
 
         R operator () (Args... arg_list)
