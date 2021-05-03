@@ -42,9 +42,9 @@ int main() {
     std::function o{test};
     std::function x{f_float};
     // cache<decltype(o()), > &p {new lru_cache{o}};
-    my_cache obj{Policy::LRU_CACHE(), o};
-    // p(n);
-    // p(m);
+    my_cache cached_o{Policy::LRU_CACHE(), o};
+    cached_o(n);
+    cached_o(m);
     // delete p;
     // // ----------------------
     // std::function<decltype(f_int)> y{f_int};
