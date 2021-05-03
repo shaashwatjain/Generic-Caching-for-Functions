@@ -62,7 +62,11 @@ R mru_cache<Cache_Size, R, Args...>::operator () (Args... arg_list)
             }
             usage_tracker_.push_back(tuple_ele);
         }
-        cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
+        
+        if constexpr(Cache_Size::type)
+            cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
+        else
+            cache_[tuple_ele] = Values{func_(arg_list...), std::end(usage_tracker_)};
         
         #if DEBUG
             std::cout << "Cache Miss" << std::endl;
