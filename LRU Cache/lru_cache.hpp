@@ -17,15 +17,8 @@ class lru_cache {
     using list_const_it_t = std::list<Arguments>::const_iterator;
 
     public:
-        explicit lru_cache(std::function<R(Args...)> f, cache_size_t cache_size = std::nullopt);
-        //  :
-        //     func_{f}, cache_size_{cache_size}, cache_{}, usage_tracker_{}
-        // {
-        //     if (cache_size.has_value())
-        //         cache_.reserve(cache_size.value());
-        // }
-
-        R operator () (Args... arg_list);
+        explicit lru_cache(std::function<R(Args...)> f, cache_size_t = std::nullopt);
+        R operator () (Args...);
         void flush_cache();
 
 
@@ -38,7 +31,7 @@ class lru_cache {
 
 
 template<typename R, typename ...Args>
-lru_cache<R, Args...>::lru_cache(std::function<R(Args...)> f, cache_size_t cache_size = std::nullopt) :
+lru_cache<R, Args...>::lru_cache(std::function<R(Args...)> f, cache_size_t cache_size) :
     func_{f}, cache_size_{cache_size}, cache_{}, usage_tracker_{}
 {
     if (cache_size_.has_value())
