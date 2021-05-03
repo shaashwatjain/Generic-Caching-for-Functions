@@ -38,6 +38,7 @@ float test(A u) {return 0.f;}
 // struct X { int f(int x, float y) { return 0; } };
 
 int main() {
+    auto start = std::chrono::high_resolution_clock::now();
 
     A n{1, 2}, m{3, 4};
     // n = m;
@@ -103,7 +104,6 @@ int main() {
     //     // f_int(val);
     //     z(v[i]);
     // }
-    auto start = std::chrono::high_resolution_clock::now();
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = finish - start;
     std::cout << "Elapsed time: " << elapsed.count() << " s\n";
