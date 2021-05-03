@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "lru_cache.hpp"
-
+#include "mru_cache.hpp"
 
 namespace Policy
 {
@@ -41,7 +41,10 @@ template<typename Policy, typename R, typename ...Args>
 class my_cache
 {
     // TODO: Add more cache policies
-    using selected_cache_t = static_switch<Policy::type, lru_cache<R, Args...>>;
+    using selected_cache_t = static_switch<Policy::type,
+                                           lru_cache<R, Args...>,
+                                           mru_cache<R, Args...>
+                                           >;
     using cache_size_t = std::optional<std::size_t>;
     public:
         explicit my_cache(Policy, std::function<R(Args...)> f, cache_size_t cache_size = std::nullopt) :
