@@ -1,7 +1,7 @@
 CC = g++
 DEBUG_VAL=1
 CPPFLAGS = -DDEBUG=${DEBUG_VAL} -Wall -Werror -Ofast -std=c++2a -pedantic -Weffc++ -g
-HEADERS = lru_cache.hpp mru_cache.hpp hash_utility.hpp
+HEADERS = lru_cache.hpp mru_cache.hpp hash_utility.hpp cache.hpp
 
 all: a.out
 
