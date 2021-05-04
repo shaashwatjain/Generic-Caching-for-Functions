@@ -57,7 +57,6 @@ std::string random_string(std::size_t length)
     return random_string;
 }
 
-["Never", "hide", "hides", "The", "sound", "sounds", "sound", "Flies", "fly", "It's", "the", "right", "right", "right", "The", "key", "key", "is", "this", "one", "It's", "an", "objective", "objective", "In", "May", "May", "may", "make", "out", "with", "me", "A", "can", "can", "help", "Compared", "with", "the", "last", "one", "this", "is", "a", "fine", "fine", "Fat", "fat", "The", "man", "we", "saw", "saw", "a", "saw", "The", "first", "second", "was", "alright", "but", "the", "second", "second", "was", "tough", "It's", "a", "square", "square", "It's", "a", "flat", "flat", "Well", "well", "well", "There", "there", "lol", "lol", "lol"]
 
 struct header http_header_gen(int rand_value)
 {
