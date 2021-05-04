@@ -3,6 +3,8 @@
 #include "hash_utility.hpp"
 #include <list>
 #include <random>
+#include <unordered_map>
+#include <functional>
 
 
 template<typename Size, typename R, typename ...Args>
