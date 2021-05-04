@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
-
+#include <concepts>
 
 #include "lru_cache.hpp"
 #include "mru_cache.hpp"
@@ -55,6 +55,32 @@ namespace cache_size
     };
 }
 
+template<typename T>
+concept Hashable_Type = requires(T Args) {
+    { std::hash<T>{}(Args) } -> std::convertible_to<std::size_t>;
+};
+
+// template<typename T>
+// using Hashable = std::is_convertible_v<std::hash<T>(), std::size_t>;
+
+template<typename Arg, typename... Args>
+    requires Hashable_Type<Arg>
+constexpr bool Hashable() 
+{ 
+    if constexpr(sizeof...(Args) != 0U)
+        Hashable<Args...>();
+    return true;
+}
+
+
+template<typename... T>
+concept Hashable_Types = Hashable<T...>();
+
+template<typename... T>
+concept Arguments = sizeof...(T) != 0;
+
+// template<typename Arg, typename... Args>
+// using Hashable_Types = typename Hashable<Arg>() && Hashable_Types<Args...>;
 
 template<int N, typename... T>
 using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
@@ -70,7 +96,7 @@ concept Non_Void_Return = !std::is_void_v<T>;
 
 
 template<typename Policy, typename Size = cache_size::UNLIMITED, typename R = int, typename ...Args>
-    requires Cache_Policy<Policy> && Cache_Size<Size> && Non_Void_Return<R>
+    requires Cache_Policy<Policy> && Cache_Size<Size> && Non_Void_Return<R> && Arguments<Args...> && Hashable_Types<Args...>
 class my_cache
 {
     // TODO: Add more cache policies

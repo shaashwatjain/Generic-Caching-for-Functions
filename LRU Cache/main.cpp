@@ -24,6 +24,16 @@ class A {
     }
 };
 
+class B {
+    int i;
+    int b;
+  public:
+    B(int i, int b): i{i}, b{b} {}
+    bool operator == (const B& rhs) const {
+        return i == rhs.i && b == rhs.b;
+    }
+};
+
 template<>
 class std::hash<A> {
   public:
@@ -32,10 +42,11 @@ class std::hash<A> {
     }
 };
 
-void f_void() {}
+// int test() {return 1;}
 long long f_int(int x) { return x * x; }
 float f_float(int x, int y) { return 0.f; }
 float test(A u) {return 0.f;}
+// float test(B u) {return 0.f;}
 // void test(A u) {return;}
 
 // struct X { int f(int x, float y) { return 0; } };
