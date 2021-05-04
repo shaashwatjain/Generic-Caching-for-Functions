@@ -5,7 +5,7 @@
 
 
 template<typename Size, typename R, typename ...Args>
-class lru_cache {
+class mru_cache {
     // Creating type alias for complex types
     using Arguments = std::tuple<Args...>;
     using Values = std::pair<R, typename std::list<Arguments>::iterator>;
@@ -16,7 +16,7 @@ class lru_cache {
     using list_const_it_t = std::list<Arguments>::const_iterator;
 
     public:
-        explicit lru_cache(std::function<R(Args...)> f, Size&&);
+        explicit mru_cache(std::function<R(Args...)> f, Size&&);
         R operator () (Args...);
         void flush_cache();
 
@@ -28,7 +28,7 @@ class lru_cache {
 
 
 template<typename Size, typename R, typename ...Args>
-lru_cache<Size, R, Args...>::lru_cache(std::function<R(Args...)> f, Size&&) :
+mru_cache<Size, R, Args...>::mru_cache(std::function<R(Args...)> f, Size&&) :
     func_{f}, cache_{}, usage_tracker_{}
 {
     if constexpr(Size::type)
@@ -36,7 +36,7 @@ lru_cache<Size, R, Args...>::lru_cache(std::function<R(Args...)> f, Size&&) :
 }
 
 template<typename Size, typename R, typename ...Args>
-R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
+R mru_cache<Size, R, Args...>::operator () (Args... arg_list)
 {
     const auto tuple_ele = std::make_tuple(arg_list...);
 
@@ -56,7 +56,7 @@ R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
         if constexpr(Size::type) {
             // Eviction code
             if (cache_.size() == Size::cache_size_) {
-                list_const_it_t lru_const_it_ = std::begin(usage_tracker_);
+                list_const_it_t lru_const_it_ = --std::end(usage_tracker_);
                 cache_.erase(*lru_const_it_);  // Eviction by Key
                 usage_tracker_.erase(lru_const_it_);  // Eviction by Iterator
             }
@@ -67,7 +67,7 @@ R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
             cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
         else
             cache_[tuple_ele] = Values{func_(arg_list...), std::end(usage_tracker_)};
-        
+
         #if DEBUG
             std::cout << "Cache Miss" << std::endl;
             std::cout << "Value added to cache" << std::endl;
@@ -78,10 +78,10 @@ R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
 }
 
 template<typename Size, typename R, typename ...Args>
-void lru_cache<Size, R, Args...>::flush_cache()
+void mru_cache<Size, R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
 
-     // Clear the bookkeeping 
+     // Clear the bookkeeping
     if constexpr(Size::type) { usage_tracker_.clear(); }
 }

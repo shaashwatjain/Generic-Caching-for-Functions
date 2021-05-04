@@ -1,10 +1,9 @@
+#pragma once
+
 #include <iostream>
 #include <tuple>
 
-#ifndef LRU_UTILITY_HPP
-#define LRU_UTILITY_HPP
-
-namespace Internal_LRU
+namespace internal_cache
 {
     auto lazyHasher = [](size_t hash, auto&&... values)
     {
@@ -27,5 +26,3 @@ namespace Internal_LRU
         }
     };
 }
-
-#endif

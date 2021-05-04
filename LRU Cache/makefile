@@ -1,7 +1,9 @@
 CC = g++
-CPPFLAGS = -Wall -Werror -Ofast -std=c++2a -pedantic -Weffc++ -g
+DEBUG_VAL=1
+CPPFLAGS = -DDEBUG=${DEBUG_VAL} -Wall -Werror -Ofast -std=c++2a -pedantic -Weffc++ -g
+HEADERS = lru_cache.hpp mru_cache.hpp hash_utility.hpp cache.hpp
 
 all: a.out
 
-a.out: main.cpp lru_cache.hpp lru_utility.hpp
+a.out: main.cpp ${HEADERS}
 	${CC} main.cpp ${CPPFLAGS} 

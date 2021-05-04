@@ -2,41 +2,46 @@
 
 #include "hash_utility.hpp"
 #include <list>
+#include <random>
+#include <unordered_map>
+#include <functional>
 
 
 template<typename Size, typename R, typename ...Args>
-class lru_cache {
+class random_cache {
     // Creating type alias for complex types
     using Arguments = std::tuple<Args...>;
-    using Values = std::pair<R, typename std::list<Arguments>::iterator>;
+    using Values = R;
 
     // Creating type alias for complex types
     using cache_t = std::unordered_map<Arguments, Values, internal_cache::tuple_hasher>;
-    using list_it_t = std::list<Arguments>::iterator;
-    using list_const_it_t = std::list<Arguments>::const_iterator;
+    using vector_it_t = std::list<Arguments>::iterator;
+    using vector_const_it_t = std::list<Arguments>::const_iterator;
 
     public:
-        explicit lru_cache(std::function<R(Args...)> f, Size&&);
+        explicit random_cache(std::function<R(Args...)> f, Size&&);
         R operator () (Args...);
         void flush_cache();
-
+        ~random_cache();
     private:
         std::function<R(Args...)> func_;
         cache_t cache_;
-        std::list<Arguments> usage_tracker_;
+        std::vector<Arguments> usage_tracker_;
+        std::random_device rand_gen_; 
+        int count;
 };
 
 
 template<typename Size, typename R, typename ...Args>
-lru_cache<Size, R, Args...>::lru_cache(std::function<R(Args...)> f, Size&&) :
-    func_{f}, cache_{}, usage_tracker_{}
+random_cache<Size, R, Args...>::random_cache(std::function<R(Args...)> f, Size&&) :
+    func_{f}, cache_{}, usage_tracker_{}, rand_gen_{}, count{}
 {
     if constexpr(Size::type)
         cache_.reserve(Size::cache_size_);
 }
 
 template<typename Size, typename R, typename ...Args>
-R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
+R random_cache<Size, R, Args...>::operator () (Args... arg_list)
 {
     const auto tuple_ele = std::make_tuple(arg_list...);
 
@@ -45,29 +50,21 @@ R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
         #if DEBUG
             std::cout << "Cache Hit!" << std::endl;
         #endif
-        if constexpr(Size::type) {
-            list_it_t &list_it_ = cache_[tuple_ele].second;
-            usage_tracker_.erase(list_it_);
-            usage_tracker_.push_back(tuple_ele);
-            list_it_ = --std::end(usage_tracker_);
-        }
+        ++count;
     }
     else {
         if constexpr(Size::type) {
             // Eviction code
             if (cache_.size() == Size::cache_size_) {
-                list_const_it_t lru_const_it_ = std::begin(usage_tracker_);
-                cache_.erase(*lru_const_it_);  // Eviction by Key
-                usage_tracker_.erase(lru_const_it_);  // Eviction by Iterator
+                vector_const_it_t victim_it_ = std::begin(usage_tracker_) + rand_gen_() % usage_tracker_.size();
+                cache_.erase(*victim_it_);  // Eviction by Key
+                usage_tracker_.erase(victim_it_);  // Eviction by Iterator
             }
             usage_tracker_.push_back(tuple_ele);
         }
 
-        if constexpr(Size::type)
-            cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
-        else
-            cache_[tuple_ele] = Values{func_(arg_list...), std::end(usage_tracker_)};
-        
+        cache_[tuple_ele] = Values{func_(arg_list...)};
+
         #if DEBUG
             std::cout << "Cache Miss" << std::endl;
             std::cout << "Value added to cache" << std::endl;
@@ -78,10 +75,16 @@ R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
 }
 
 template<typename Size, typename R, typename ...Args>
-void lru_cache<Size, R, Args...>::flush_cache()
+void random_cache<Size, R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
 
-     // Clear the bookkeeping 
+     // Clear the bookkeeping
     if constexpr(Size::type) { usage_tracker_.clear(); }
+}
+
+template<typename Size, typename R, typename ...Args>
+random_cache<Size, R, Args...>::~random_cache()
+{
+    std::cout << "Number of hits: " << count << std::endl;
 }
