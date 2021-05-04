@@ -9,6 +9,7 @@
 
 #include "lru_cache.hpp"
 #include "mru_cache.hpp"
+#include "random_cache.hpp"
 
 namespace policy
 {
