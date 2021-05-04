@@ -15,8 +15,8 @@ class random_cache {
 
     // Creating type alias for complex types
     using cache_t = std::unordered_map<Arguments, Values, internal_cache::tuple_hasher>;
-    using vector_it_t = std::list<Arguments>::iterator;
-    using vector_const_it_t = std::list<Arguments>::const_iterator;
+    using vector_it_t = std::vector<Arguments>::iterator;
+    using vector_const_it_t = std::vector<Arguments>::const_iterator;
 
     public:
         explicit random_cache(std::function<R(Args...)> f, Size&&);
@@ -56,7 +56,7 @@ R random_cache<Size, R, Args...>::operator () (Args... arg_list)
         if constexpr(Size::type) {
             // Eviction code
             if (cache_.size() == Size::cache_size_) {
-                vector_const_it_t victim_it_ = std::begin(usage_tracker_) + rand_gen_() % usage_tracker_.size();
+                vector_const_it_t victim_it_ = std::begin(usage_tracker_) + (rand_gen_() % usage_tracker_.size());
                 cache_.erase(*victim_it_);  // Eviction by Key
                 usage_tracker_.erase(victim_it_);  // Eviction by Iterator
             }
@@ -70,8 +70,7 @@ R random_cache<Size, R, Args...>::operator () (Args... arg_list)
             std::cout << "Value added to cache" << std::endl;
         #endif
     }
-
-    return cache_[tuple_ele].first;
+    return cache_[tuple_ele];
 }
 
 template<typename Size, typename R, typename ...Args>
@@ -86,5 +85,5 @@ void random_cache<Size, R, Args...>::flush_cache()
 template<typename Size, typename R, typename ...Args>
 random_cache<Size, R, Args...>::~random_cache()
 {
-    std::cout << "Number of hits: " << count << std::endl;
+    std::cout << "\tHits for Random: " << count << std::endl;
 }
