@@ -93,10 +93,12 @@ template<int N, typename... T>
 using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
 
 template<typename T>
-concept Cache_Policy = std::is_base_of_v<policy::CACHE_POLICY, T>;
+concept Cache_Policy = std::is_base_of_v<policy::CACHE_POLICY, T> && 
+                        (!std::is_same_v<policy::CACHE_POLICY, T>);
 
 template<typename T>
-concept Cache_Size = std::is_base_of_v<cache_size::CACHE_SIZE, T>;
+concept Cache_Size = std::is_base_of_v<cache_size::CACHE_SIZE, T> && 
+                        (!std::is_same_v<cache_size::CACHE_SIZE, T>);
 
 template<typename T>
 concept Non_Void_Return = !std::is_void_v<T>;
