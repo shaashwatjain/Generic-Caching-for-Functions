@@ -12,22 +12,23 @@
 
 namespace policy
 {
-    struct LRU_CACHE
+    struct CACHE_POLICY {};
+    struct LRU_CACHE : CACHE_POLICY
     {
         enum {type = 0};
     };
 
-    struct MRU_CACHE
+    struct MRU_CACHE : CACHE_POLICY
     {
         enum {type = 1};
     };
 
-    struct LFU_CACHE
+    struct LFU_CACHE : CACHE_POLICY
     {
         enum {type = 2};
     };
 
-    struct MFU_CACHE
+    struct MFU_CACHE : CACHE_POLICY
     {
         enum {type = 3};
     };
@@ -36,13 +37,14 @@ namespace policy
 
 namespace cache_size
 {
-    struct UNLIMITED
+    struct CACHE_SIZE {};
+    struct UNLIMITED : CACHE_SIZE
     {
         enum { type = 0 };
     };
 
     template<std::size_t Size>
-    struct RESTRICTED
+    struct RESTRICTED : CACHE_SIZE
     {
         enum { cache_size_ = Size, type = 1 };
         RESTRICTED()
@@ -57,21 +59,29 @@ namespace cache_size
 template<int N, typename... T>
 using static_switch = typename std::tuple_element<N, std::tuple<T...> >::type;
 
-template<typename Policy, typename Cache_Size = cache_size::UNLIMITED, typename R = int, typename ...Args>
+template<typename T>
+concept Cache_Policy = std::is_base_of_v<policy::CACHE_POLICY, T>;
+
+template<typename T>
+concept Cache_Size = std::is_base_of_v<cache_size::CACHE_SIZE, T>;
+
+template<typename T>
+concept Non_Void_Return = !std::is_void_v<T>;
+
+
+template<typename Policy, typename Size = cache_size::UNLIMITED, typename R = int, typename ...Args>
+    requires Cache_Policy<Policy> && Cache_Size<Size> && Non_Void_Return<R>
 class my_cache
 {
     // TODO: Add more cache policies
     using selected_cache_t = static_switch<Policy::type,
-                                           lru_cache<Cache_Size, R, Args...>,
-                                           mru_cache<Cache_Size, R, Args...>
+                                           lru_cache<Size, R, Args...>,
+                                           mru_cache<Size, R, Args...>
                                            >;
     public:
-        explicit my_cache(std::function<R(Args...)> f, Policy, Cache_Size&& obj = Cache_Size()) :
+        explicit my_cache(std::function<R(Args...)> f, Policy, Size&& obj = Size()) :
             cache_(f, std::move(obj))
-        {
-            static_assert(!std::is_void<R>::value,
-                          "Return type of the function-to-wrap must not be void!");
-        }
+        {}
 
         R operator () (Args... arg_list)
         {

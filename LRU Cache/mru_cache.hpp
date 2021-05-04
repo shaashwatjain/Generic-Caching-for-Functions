@@ -4,7 +4,7 @@
 #include <list>
 
 
-template<typename Cache_Size, typename R, typename ...Args>
+template<typename Size, typename R, typename ...Args>
 class mru_cache {
     // Creating type alias for complex types
     using Arguments = std::tuple<Args...>;
@@ -16,7 +16,7 @@ class mru_cache {
     using list_const_it_t = std::list<Arguments>::const_iterator;
 
     public:
-        explicit mru_cache(std::function<R(Args...)> f, Cache_Size&&);
+        explicit mru_cache(std::function<R(Args...)> f, Size&&);
         R operator () (Args...);
         void flush_cache();
 
@@ -27,16 +27,16 @@ class mru_cache {
 };
 
 
-template<typename Cache_Size, typename R, typename ...Args>
-mru_cache<Cache_Size, R, Args...>::mru_cache(std::function<R(Args...)> f, Cache_Size&&) :
+template<typename Size, typename R, typename ...Args>
+mru_cache<Size, R, Args...>::mru_cache(std::function<R(Args...)> f, Size&&) :
     func_{f}, cache_{}, usage_tracker_{}
 {
-    if constexpr(Cache_Size::type)
-        cache_.reserve(Cache_Size::cache_size_);
+    if constexpr(Size::type)
+        cache_.reserve(Size::cache_size_);
 }
 
-template<typename Cache_Size, typename R, typename ...Args>
-R mru_cache<Cache_Size, R, Args...>::operator () (Args... arg_list)
+template<typename Size, typename R, typename ...Args>
+R mru_cache<Size, R, Args...>::operator () (Args... arg_list)
 {
     const auto tuple_ele = std::make_tuple(arg_list...);
 
@@ -45,7 +45,7 @@ R mru_cache<Cache_Size, R, Args...>::operator () (Args... arg_list)
         #if DEBUG
             std::cout << "Cache Hit!" << std::endl;
         #endif
-        if constexpr(Cache_Size::type) {
+        if constexpr(Size::type) {
             list_it_t &list_it_ = cache_[tuple_ele].second;
             usage_tracker_.erase(list_it_);
             usage_tracker_.push_back(tuple_ele);
@@ -53,9 +53,9 @@ R mru_cache<Cache_Size, R, Args...>::operator () (Args... arg_list)
         }
     }
     else {
-        if constexpr(Cache_Size::type) {
+        if constexpr(Size::type) {
             // Eviction code
-            if (cache_.size() == Cache_Size::cache_size_) {
+            if (cache_.size() == Size::cache_size_) {
                 list_const_it_t lru_const_it_ = --std::end(usage_tracker_);
                 cache_.erase(*lru_const_it_);  // Eviction by Key
                 usage_tracker_.erase(lru_const_it_);  // Eviction by Iterator
@@ -63,7 +63,7 @@ R mru_cache<Cache_Size, R, Args...>::operator () (Args... arg_list)
             usage_tracker_.push_back(tuple_ele);
         }
 
-        if constexpr(Cache_Size::type)
+        if constexpr(Size::type)
             cache_[tuple_ele] = Values{func_(arg_list...), --std::end(usage_tracker_)};
         else
             cache_[tuple_ele] = Values{func_(arg_list...), std::end(usage_tracker_)};
@@ -77,11 +77,11 @@ R mru_cache<Cache_Size, R, Args...>::operator () (Args... arg_list)
     return cache_[tuple_ele].first;
 }
 
-template<typename Cache_Size, typename R, typename ...Args>
-void mru_cache<Cache_Size, R, Args...>::flush_cache()
+template<typename Size, typename R, typename ...Args>
+void mru_cache<Size, R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
 
      // Clear the bookkeeping
-    if constexpr(Cache_Size::type) { usage_tracker_.clear(); }
+    if constexpr(Size::type) { usage_tracker_.clear(); }
 }

@@ -36,6 +36,8 @@ void f_void() {}
 long long f_int(int x) { return x * x; }
 float f_float(int x, int y) { return 0.f; }
 float test(A u) {return 0.f;}
+// void test(A u) {return;}
+
 // struct X { int f(int x, float y) { return 0; } };
 
 int main() {
