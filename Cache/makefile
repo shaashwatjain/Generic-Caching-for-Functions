@@ -7,3 +7,9 @@ all: a.out
 
 a.out: main.cpp ${HEADERS}
 	${CC} main.cpp ${CPPFLAGS} 
+
+.PHONY: documentation
+
+documentation:
+	doxygen Doxyfile
+	

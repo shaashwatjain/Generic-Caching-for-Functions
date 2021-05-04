@@ -1,0 +1,8 @@
+<map id="policy::CACHE_POLICY" name="policy::CACHE_POLICY">
+<area shape="rect" id="node1" title=" " alt="" coords="5,107,173,133"/>
+<area shape="rect" id="node2" href="$structpolicy_1_1LFU__CACHE.html" title=" " alt="" coords="239,5,383,32"/>
+<area shape="rect" id="node3" href="$structpolicy_1_1LRU__CACHE.html" title=" " alt="" coords="237,56,384,83"/>
+<area shape="rect" id="node4" href="$structpolicy_1_1MFU__CACHE.html" title=" " alt="" coords="237,107,385,133"/>
+<area shape="rect" id="node5" href="$structpolicy_1_1MRU__CACHE.html" title=" " alt="" coords="235,157,386,184"/>
+<area shape="rect" id="node6" href="$structpolicy_1_1RANDOM__CACHE.html" title=" " alt="" coords="221,208,400,235"/>
+</map>
