@@ -8,7 +8,7 @@
 #include <functional>
 
 template<typename Size, typename R, typename ...Args>
-class mru_cache {
+class mfu_cache {
     // Creating type alias for complex types
     using Arguments = std::tuple<Args...>;
     using key_value_t = std::pair<Arguments, R>;
@@ -16,8 +16,8 @@ class mru_cache {
     using cache_t = std::unordered_map<Arguments, map_iterator, internal_cache::tuple_hasher>;
 
     public:
-        explicit mru_cache(std::function<R(Args...)> f, Size&&);
-        ~mru_cache();
+        explicit mfu_cache(std::function<R(Args...)> f, Size&&);
+        ~mfu_cache();
 
         R operator () (Args...);
         void flush_cache();
@@ -31,7 +31,7 @@ class mru_cache {
 
 
 template<typename Size, typename R, typename ...Args>
-mru_cache<Size, R, Args...>::mru_cache(std::function<R(Args...)> f, Size&&) :
+mfu_cache<Size, R, Args...>::mfu_cache(std::function<R(Args...)> f, Size&&) :
     func_{f}, freq_map{}, cache_{}
 {
     if constexpr(Size::type)
@@ -39,7 +39,7 @@ mru_cache<Size, R, Args...>::mru_cache(std::function<R(Args...)> f, Size&&) :
 }
 
 template<typename Size, typename R, typename ...Args>
-R mru_cache<Size, R, Args...>::operator () (Args... arg_list)
+R mfu_cache<Size, R, Args...>::operator () (Args... arg_list)
 {
     const auto tuple_ele = std::make_tuple(arg_list...);
 
@@ -70,13 +70,13 @@ R mru_cache<Size, R, Args...>::operator () (Args... arg_list)
 }
 
 template<typename Size, typename R, typename ...Args>
-void mru_cache<Size, R, Args...>::flush_cache()
+void mfu_cache<Size, R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
 }
 
 template<typename Size, typename R, typename ...Args>
-mru_cache<Size, R, Args...>::~mru_cache() 
+mfu_cache<Size, R, Args...>::~mfu_cache() 
 {
     std::cout << "\tHits for MRU : " << counter << "\n";
 }
