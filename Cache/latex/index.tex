@@ -14,3 +14,107 @@
 \PBS\centering Shaashwat J &\PBS\centering P\+E\+S1201802346  \\\cline{1-2}
 \PBS\centering Raghav A &\PBS\centering P\+E\+S1201800312  \\\cline{1-2}
 \end{longtabu}
+\hypertarget{index_autotoc_md3}{}\doxysection{Introduction\+:}\label{index_autotoc_md3}
+In this project our aim is to create a generic wrapper for a user defined function to give it a cache with a user-\/selected policy for replacement, i.\+e L\+RU, M\+FU, M\+RU, L\+FU, Random etc. The wrapper returns a function object which can then be used by the user to make multiple calls to their function and when repeated calls are made, the system uses its cache rather than recalculating the value again.\hypertarget{index_autotoc_md4}{}\doxysection{How to Execute the Project\+:}\label{index_autotoc_md4}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ cd Cache}
+\DoxyCodeLine{\$ make}
+\DoxyCodeLine{\$ ./a.out}
+\end{DoxyCode}
+
+
+{\bfseries{Note\+:}} In the makefile one can enable or disable the diagnostic print statements if needed. Note that using the D\+E\+B\+UG mode may write a lot of messages to stdout.\hypertarget{index_autotoc_md5}{}\doxysection{Compiler Flags and Significance\+:}\label{index_autotoc_md5}
+{\ttfamily -\/D\+D\+E\+B\+UG=\$\{D\+E\+B\+U\+G\+\_\+\+V\+AL\}} \+: ~\newline
+ Allows us to enable (non-\/zero value for {\ttfamily D\+E\+B\+U\+G\+\_\+\+V\+AL}) or disable (zero value for {\ttfamily D\+E\+B\+U\+G\+\_\+\+V\+AL}) debug mode wherein the code prints more data about the cache. This mode is useful during debugging.
+
+{\ttfamily -\/Wall} \+: ~\newline
+ Enables recommended compiler warnings
+
+{\ttfamily -\/Werror} \+: ~\newline
+ Make all warnings into errors.
+
+{\ttfamily -\/std=c++2a} \+: ~\newline
+ Use the C++20 standard
+
+{\ttfamily -\/pedantic} \+: ~\newline
+ Issue all the warnings demanded by strict I\+SO C and I\+SO C++; reject all programs that use forbidden extensions, and some other programs that do not follow I\+SO C and I\+SO C++.
+
+{\ttfamily -\/Weffc++} \+: ~\newline
+ Warn about violations of the following style guidelines from Scott Meyers\textquotesingle{} Effective C++ series of books\+:
+\begin{DoxyItemize}
+\item Define a copy constructor and an assignment operator for classes with dynamically-\/allocated memory.
+\item Prefer initialization to assignment in constructors.
+\item Have \char`\"{}operator=\char`\"{} return a reference to $\ast$this.
+\item Don\textquotesingle{}t try to return a reference when you must return an object.
+\item Distinguish between prefix and postfix forms of increment and decrement operators.
+\item Never overload \char`\"{}\&\&\char`\"{}, \char`\"{}$\vert$$\vert$\char`\"{}, or \char`\"{},\char`\"{}.
+\end{DoxyItemize}
+
+{\ttfamily -\/g} \+: ~\newline
+ Generate debugging information\hypertarget{index_autotoc_md6}{}\doxysection{Novelty\+:}\label{index_autotoc_md6}
+Our project makes extensive use of Modern C++ programming techniques. Our code uses C++20 features such as concepts and better compile time types deduction. We have also made use of extensive compile time programming and checks to ensure that we are able to achieve a zero-\/abstraction overhead for the user and they only pay for what they use, which in our case is extra space for the cache and extra computation for the cache lookup and eviction policy.\hypertarget{index_autotoc_md7}{}\doxysection{Caching Overheads\+:}\label{index_autotoc_md7}
+Memory for the unordered\+\_\+map which is used to implement the cache Memory for the book-\/keeping for implementing the cache replacement policy The C\+PU overhead for calculating the hash of the key every lookup C\+PU overhead for maintaining the the book-\/keeping for implementing the cache replacement policy\hypertarget{index_autotoc_md8}{}\doxysection{Caching Policies Implemented\+:}\label{index_autotoc_md8}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Least Recently Used (L\+RU)}} ~\newline
+ Description\+: In this policy, when the cache becomes full, the least recently used key-\/value pair in the map is selected and evicted from the cache to make space for the incoming element.
+\begin{DoxyItemize}
+\item {\bfseries{Time Complexity\+:}} O(1) for insertion and deletion of key-\/value pairs.
+\item {\bfseries{Space Complexity\+:}} O(n) where n is the number of unique elements given as argument from the cached function.
+\end{DoxyItemize}
+\item {\bfseries{Most Recently Used (M\+RU)}} ~\newline
+ Description\+: In this policy, when the cache becomes full, the least recently used key-\/value pair in the map is selected and evicted from the cache to make space for the incoming element.
+\begin{DoxyItemize}
+\item {\bfseries{Time Complexity\+:}} O(1) for insertion and deletion of key-\/value pairs.
+\item {\bfseries{Space Complexity\+:}} O(n) where n is the number of unique elements given as argument from the cached function.
+\end{DoxyItemize}
+\item {\bfseries{Least Frequently Used (L\+FU)}} ~\newline
+ Description\+: In this policy, when the cache becomes full, the least frequently used key-\/value pair in the map is selected and evicted from the cache to make space for the incoming element.
+\begin{DoxyItemize}
+\item {\bfseries{Time Complexity\+:}} O(1) for insertion and deletion of key-\/value pairs.
+\item {\bfseries{Space Complexity\+:}} O(n) where n is the number of unique elements given as argument from the cached function.
+\end{DoxyItemize}
+\item {\bfseries{Most Frequently Used (M\+FU)}} ~\newline
+ Description\+: In this policy, when the cache becomes full, the most frequently used key-\/value pair in the map is selected and evicted from the cache to make space for the incoming element.
+\begin{DoxyItemize}
+\item {\bfseries{Time Complexity\+:}} O(1) for insertion and deletion of key-\/value pairs.
+\item {\bfseries{Space Complexity\+:}} O(n) where n is the number of unique elements given as argument from the cached function.
+\end{DoxyItemize}
+\item {\bfseries{Random Eviction (RE)}} ~\newline
+ In this policy, when the cache becomes full, the key-\/value pair in the map is selected at random and evicted from the cache to make space for the incoming element.
+\begin{DoxyItemize}
+\item {\bfseries{Time Complexity\+:}} O(1) for insertion and deletion of key-\/value pairs.
+\item {\bfseries{Space Complexity\+:}} O(n) where n is the number of unique elements given as argument from the cached function.
+\end{DoxyItemize}
+\end{DoxyEnumerate}\hypertarget{index_autotoc_md9}{}\doxysection{Discussion about Implementation\+:}\label{index_autotoc_md9}
+In the client\textquotesingle{}s file, the client needs to only include our header file called\+: cache.\+hpp After that the user must first wrap their function in an std\+::function object and then pass it as a parameter to the constructor of the object of type my\+\_\+cache. The user must also specify additional parameters about the\+: ~\newline
+
+\begin{DoxyItemize}
+\item {\bfseries{Caching policy}}
+\begin{DoxyItemize}
+\item {\bfseries{Requirement\+:}} Mandatory
+\item {\bfseries{Object of Type\+:}}
+\begin{DoxyItemize}
+\item {\ttfamily policy\+::\+L\+R\+U\+\_\+\+C\+A\+C\+HE}
+\item {\ttfamily policy\+::\+M\+R\+U\+\_\+\+C\+A\+C\+HE}
+\item {\ttfamily policy\+::\+L\+F\+U\+\_\+\+C\+A\+C\+HE}
+\item {\ttfamily policy\+::\+M\+F\+U\+\_\+\+C\+A\+C\+HE}
+\item {\ttfamily policy\+::\+R\+A\+N\+D\+O\+M\+\_\+\+C\+A\+C\+HE}
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\bfseries{Size of the cache}}
+\begin{DoxyItemize}
+\item {\bfseries{Requirement\+:}} Optional
+\item {\bfseries{Object of Type\+:}}
+\begin{DoxyItemize}
+\item {\ttfamily cache\+\_\+size\+::\+U\+N\+L\+I\+M\+I\+T\+ED}
+\item {\ttfamily cache\+\_\+size\+::\+R\+E\+S\+T\+R\+I\+C\+T\+ED$<$Size$>$}
+\begin{DoxyItemize}
+\item {\ttfamily Size} is a value of type {\ttfamily std\+::size\+\_\+t}, that signifies the size of the cache the user desires
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item {\bfseries{Default Value\+:}} {\ttfamily cache\+\_\+size\+::\+U\+N\+L\+I\+M\+I\+T\+ED}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{index_autotoc_md10}{}\doxysection{Conclusion\+:}\label{index_autotoc_md10}
+In this project we have created a generic cache wrapper for user defined functions. The wrapper also provides the user with the choice of selecting the size of and eviction policy of the cache. We also demonstrated that the cached wrapped version of the user defined function was faster than the non cache wrapped version of the same function across various types of test cases, cache sizes and cache eviction policies. The implementation uses modern C++ (here C++20) features and takes advantage of compile time programming in order to make sure that the generated code is exactly what the user required. 

@@ -81,6 +81,111 @@ Team Members:</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyCenter">Raghav A </td><td class="markdownTableBodyCenter">PES1201800312  </td></tr>
 </table>
+<h1><a class="anchor" id="autotoc_md3"></a>
+Introduction:</h1>
+<p>In this project our aim is to create a generic wrapper for a user defined function to give it a cache with a user-selected policy for replacement, i.e LRU, MFU, MRU, LFU, Random etc. The wrapper returns a function object which can then be used by the user to make multiple calls to their function and when repeated calls are made, the system uses its cache rather than recalculating the value again.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
+How to Execute the Project:</h1>
+<div class="fragment"><div class="line">$ cd Cache</div>
+<div class="line">$ make</div>
+<div class="line">$ ./a.out</div>
+</div><!-- fragment --><p><b>Note:</b> In the makefile one can enable or disable the diagnostic print statements if needed. Note that using the DEBUG mode may write a lot of messages to stdout.</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
+Compiler Flags and Significance:</h1>
+<p><code>-DDEBUG=${DEBUG_VAL}</code> : <br  />
+ Allows us to enable (non-zero value for <code>DEBUG_VAL</code>) or disable (zero value for <code>DEBUG_VAL</code>) debug mode wherein the code prints more data about the cache. This mode is useful during debugging.</p>
+<p><code>-Wall</code> : <br  />
+ Enables recommended compiler warnings</p>
+<p><code>-Werror</code> : <br  />
+ Make all warnings into errors.</p>
+<p><code>-std=c++2a</code> : <br  />
+ Use the C++20 standard</p>
+<p><code>-pedantic</code> : <br  />
+ Issue all the warnings demanded by strict ISO C and ISO C++; reject all programs that use forbidden extensions, and some other programs that do not follow ISO C and ISO C++.</p>
+<p><code>-Weffc++</code> : <br  />
+ Warn about violations of the following style guidelines from Scott Meyers' Effective C++ series of books:</p><ul>
+<li>Define a copy constructor and an assignment operator for classes with dynamically-allocated memory.</li>
+<li>Prefer initialization to assignment in constructors.</li>
+<li>Have "operator=" return a reference to *this.</li>
+<li>Don't try to return a reference when you must return an object.</li>
+<li>Distinguish between prefix and postfix forms of increment and decrement operators.</li>
+<li>Never overload "&amp;&amp;", "||", or ",".</li>
+</ul>
+<p><code>-g</code> : <br  />
+ Generate debugging information</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+Novelty:</h1>
+<p>Our project makes extensive use of Modern C++ programming techniques. Our code uses C++20 features such as concepts and better compile time types deduction. We have also made use of extensive compile time programming and checks to ensure that we are able to achieve a zero-abstraction overhead for the user and they only pay for what they use, which in our case is extra space for the cache and extra computation for the cache lookup and eviction policy.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+Caching Overheads:</h1>
+<p>Memory for the unordered_map which is used to implement the cache Memory for the book-keeping for implementing the cache replacement policy The CPU overhead for calculating the hash of the key every lookup CPU overhead for maintaining the the book-keeping for implementing the cache replacement policy</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Caching Policies Implemented:</h1>
+<ol type="1">
+<li><b>Least Recently Used (LRU)</b> <br  />
+ Description: In this policy, when the cache becomes full, the least recently used key-value pair in the map is selected and evicted from the cache to make space for the incoming element.<ul>
+<li><b>Time Complexity:</b> O(1) for insertion and deletion of key-value pairs.</li>
+<li><b>Space Complexity:</b> O(n) where n is the number of unique elements given as argument from the cached function.</li>
+</ul>
+</li>
+<li><b>Most Recently Used (MRU)</b> <br  />
+ Description: In this policy, when the cache becomes full, the least recently used key-value pair in the map is selected and evicted from the cache to make space for the incoming element.<ul>
+<li><b>Time Complexity:</b> O(1) for insertion and deletion of key-value pairs.</li>
+<li><b>Space Complexity:</b> O(n) where n is the number of unique elements given as argument from the cached function.</li>
+</ul>
+</li>
+<li><b>Least Frequently Used (LFU)</b> <br  />
+ Description: In this policy, when the cache becomes full, the least frequently used key-value pair in the map is selected and evicted from the cache to make space for the incoming element.<ul>
+<li><b>Time Complexity:</b> O(1) for insertion and deletion of key-value pairs.</li>
+<li><b>Space Complexity:</b> O(n) where n is the number of unique elements given as argument from the cached function.</li>
+</ul>
+</li>
+<li><b>Most Frequently Used (MFU)</b> <br  />
+ Description: In this policy, when the cache becomes full, the most frequently used key-value pair in the map is selected and evicted from the cache to make space for the incoming element.<ul>
+<li><b>Time Complexity:</b> O(1) for insertion and deletion of key-value pairs.</li>
+<li><b>Space Complexity:</b> O(n) where n is the number of unique elements given as argument from the cached function.</li>
+</ul>
+</li>
+<li><b>Random Eviction (RE)</b> <br  />
+ In this policy, when the cache becomes full, the key-value pair in the map is selected at random and evicted from the cache to make space for the incoming element.<ul>
+<li><b>Time Complexity:</b> O(1) for insertion and deletion of key-value pairs.</li>
+<li><b>Space Complexity:</b> O(n) where n is the number of unique elements given as argument from the cached function.</li>
+</ul>
+</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md9"></a>
+Discussion about Implementation:</h1>
+<p>In the client's file, the client needs to only include our header file called: cache.hpp After that the user must first wrap their function in an std::function object and then pass it as a parameter to the constructor of the object of type my_cache. The user must also specify additional parameters about the: <br  />
+</p><ul>
+<li><b>Caching policy</b><ul>
+<li><b>Requirement:</b> Mandatory</li>
+<li><b>Object of Type:</b><ul>
+<li><code>policy::LRU_CACHE</code></li>
+<li><code>policy::MRU_CACHE</code></li>
+<li><code>policy::LFU_CACHE</code></li>
+<li><code>policy::MFU_CACHE</code></li>
+<li><code>policy::RANDOM_CACHE</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b>Size of the cache</b><ul>
+<li><b>Requirement:</b> Optional</li>
+<li><b>Object of Type:</b><ul>
+<li><code>cache_size::UNLIMITED</code></li>
+<li><code>cache_size::RESTRICTED&lt;Size&gt;</code><ul>
+<li><code>Size</code> is a value of type <code>std::size_t</code>, that signifies the size of the cache the user desires</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b>Default Value:</b> <code>cache_size::UNLIMITED</code></li>
+</ul>
+</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md10"></a>
+Conclusion:</h1>
+<p>In this project we have created a generic cache wrapper for user defined functions. The wrapper also provides the user with the choice of selecting the size of and eviction policy of the cache. We also demonstrated that the cached wrapped version of the user defined function was faster than the non cache wrapped version of the same function across various types of test cases, cache sizes and cache eviction policies. The implementation uses modern C++ (here C++20) features and takes advantage of compile time programming in order to make sure that the generated code is exactly what the user required. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
