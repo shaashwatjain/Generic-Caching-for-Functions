@@ -88,7 +88,7 @@ void lru_cache<Size, R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
 
-     // Clear the bookkeeping 
+    // Clear the bookkeeping 
     if constexpr(Size::type) { usage_tracker_.clear(); }
 }
 
