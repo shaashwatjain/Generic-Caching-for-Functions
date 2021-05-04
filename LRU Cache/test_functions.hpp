@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <string>
 #include <random>
+#include <memory>
 
 int prime_factors(long long int n) 
 {
@@ -58,15 +59,24 @@ std::string random_string(std::size_t length)
 }
 
 
-struct header http_header_gen(int rand_value)
+header http_header_gen(int rand_value)
 {
-    struct header header_n;
+    header header_n;
     header_n.url = random_string(200);
     header_n.content_type = random_string(100);
     header_n.content = random_string(10240);
     return header_n;
 }
 
+
+std::shared_ptr<header> http_header_gen_ptr(int rand_value)
+{
+    std::shared_ptr<header> header_n = std::make_shared<header> ();
+    header_n -> url = random_string(200);
+    header_n -> content_type = random_string(100);
+    header_n -> content = random_string(10240);
+    return header_n;
+}
 
 
 template<typename func>
