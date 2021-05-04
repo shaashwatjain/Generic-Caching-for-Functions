@@ -28,13 +28,13 @@ class random_cache {
         cache_t cache_;
         std::vector<Arguments> usage_tracker_;
         std::random_device rand_gen_; 
-        int count;
+        std::size_t counter;
 };
 
 
 template<typename Size, typename R, typename ...Args>
 random_cache<Size, R, Args...>::random_cache(std::function<R(Args...)> f, Size&&) :
-    func_{f}, cache_{}, usage_tracker_{}, rand_gen_{}, count{}
+    func_{f}, cache_{}, usage_tracker_{}, rand_gen_{}, counter{}
 {
     if constexpr(Size::type)
         cache_.reserve(Size::cache_size_);
@@ -50,7 +50,7 @@ R random_cache<Size, R, Args...>::operator () (Args... arg_list)
         #if DEBUG
             std::cout << "Cache Hit!" << std::endl;
         #endif
-        ++count;
+        ++counter;
     }
     else {
         if constexpr(Size::type) {
@@ -85,5 +85,5 @@ void random_cache<Size, R, Args...>::flush_cache()
 template<typename Size, typename R, typename ...Args>
 random_cache<Size, R, Args...>::~random_cache()
 {
-    std::cout << "\tHits for Random: " << count << std::endl;
+    std::cout << "\tHits for Random: " << counter << std::endl;
 }

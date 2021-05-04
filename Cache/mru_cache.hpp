@@ -27,13 +27,13 @@ class mru_cache {
         std::function<R(Args...)> func_;
         cache_t cache_;
         std::list<Arguments> usage_tracker_;
-        int counter = 0;
+        std::size_t counter;
 };
 
 
 template<typename Size, typename R, typename ...Args>
 mru_cache<Size, R, Args...>::mru_cache(std::function<R(Args...)> f, Size&&) :
-    func_{f}, cache_{}, usage_tracker_{}
+    func_{f}, cache_{}, usage_tracker_{}, counter{}
 {
     if constexpr(Size::type)
         cache_.reserve(Size::cache_size_);

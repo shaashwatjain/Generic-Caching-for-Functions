@@ -26,13 +26,13 @@ class lfu_cache {
         std::function<R(Args...)> func_;
         std::multimap<int, key_value_t> freq_map;
         cache_t cache_;
-        int counter = 0;
+        std::size_t counter;
 };
 
 
 template<typename Size, typename R, typename ...Args>
 lfu_cache<Size, R, Args...>::lfu_cache(std::function<R(Args...)> f, Size&&) :
-    func_{f}, freq_map{}, cache_{}
+    func_{f}, freq_map{}, cache_{}, counter{}
 {
     if constexpr(Size::type)
         cache_.reserve(Size::cache_size_);
