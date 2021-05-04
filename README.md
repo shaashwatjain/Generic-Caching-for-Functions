@@ -99,7 +99,7 @@ Description: In this policy, when the cache becomes full, the most frequently us
 
 5. **Random Eviction (RE)**  
 In this policy, when the cache becomes full, the key-value pair in the map is selected at random and evicted from the cache to make space for the incoming element.
-    * **Time Complexity:** O(1) for insertion and deletion of key-value pairs.
+    * **Time Complexity:** O(n) for insertion and deletion of key-value pairs.
     * **Space Complexity:** O(n) where n is the number of unique elements given as argument from the cached function.
 
 ## Discussion about Implementation:
