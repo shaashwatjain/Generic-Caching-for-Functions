@@ -13,54 +13,9 @@
 #include "mfu_cache.hpp"
 #include "random_cache.hpp"
 
-namespace policy
-{
-    struct CACHE_POLICY {};
-    struct LRU_CACHE : CACHE_POLICY
-    {
-        enum {type = 0};
-    };
+#include "cache_policy.hpp"
+#include "cache_size_options.hpp"
 
-    struct MRU_CACHE : CACHE_POLICY
-    {
-        enum {type = 1};
-    };
-
-    struct LFU_CACHE : CACHE_POLICY
-    {
-        enum {type = 2};
-    };
-
-    struct MFU_CACHE : CACHE_POLICY
-    {
-        enum {type = 3};
-    };
-
-    struct RANDOM_CACHE : CACHE_POLICY
-    {
-        enum {type = 4};
-    };
-} // namespace Policy
-
-namespace cache_size
-{
-    struct CACHE_SIZE {};
-    struct UNLIMITED : CACHE_SIZE
-    {
-        enum { type = 0 };
-    };
-
-    template<std::size_t Size>
-    struct RESTRICTED : CACHE_SIZE
-    {
-        enum { cache_size_ = Size, type = 1 };
-        RESTRICTED()
-        {
-            static_assert(Size > 0,
-                          "Size of cache must be greater than 0");
-        }
-    };
-}
 
 template<typename T>
 concept Hashable_Type = requires(T Args) {
@@ -108,7 +63,6 @@ template<typename Policy, typename Size = cache_size::UNLIMITED, typename R = in
     requires Cache_Policy<Policy> && Cache_Size<Size> && Non_Void_Return<R> && Arguments<Args...> && Hashable_Types<Args...>
 class my_cache
 {
-    // TODO: Add more cache policies
     using selected_cache_t = static_switch<Policy::type,
                                            lru_cache<Size, R, Args...>,
                                            mru_cache<Size, R, Args...>,
