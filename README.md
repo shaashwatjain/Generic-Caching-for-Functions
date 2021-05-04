@@ -57,7 +57,9 @@ Generate debugging information
 
 ## Novelty:
 
-Our project makes extensive use of Modern C++ programming techniques. Our code uses C++20 features such as concepts and better compile time types deduction. We have also made use of extensive compile time programming and checks to ensure that we are able to achieve a zero-abstraction overhead for the user and they only pay for what they use, which in our case is extra space for the cache and extra computation for the cache lookup and eviction policy.
+Our project makes extensive use of Modern C++ programming techniques. Our code uses C++20 features such as concepts and better compile time types deduction. We have also made use of extensive compile time programming and checks to ensure that we are able to achieve a zero-abstraction overhead for the user and they only pay for what they use, which in our case is extra space for the cache and extra computation for the cache lookup and eviction policy.  
+The user can also use pointer types with our cache provided they use a `shared_ptr<T>` so that the pointer does not dangle until the the elements are removed from the cache or the cache goes out of scope and the user does not hold the `shared_ptr<T>`. This ensures no cache leaks on part of the user and cache, while taking advantage of the caching infrastructure.
+
 
 ## Caching Overheads:
 
