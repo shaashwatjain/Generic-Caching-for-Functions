@@ -2,7 +2,9 @@
 
 #include "hash_utility.hpp"
 #include <list>
-
+#include <limits>
+#include <unordered_map>
+#include <functional>
 
 template<typename Size, typename R, typename ...Args>
 class lru_cache {
@@ -17,6 +19,8 @@ class lru_cache {
 
     public:
         explicit lru_cache(std::function<R(Args...)> f, Size&&);
+        ~lru_cache();
+
         R operator () (Args...);
         void flush_cache();
 
@@ -24,6 +28,7 @@ class lru_cache {
         std::function<R(Args...)> func_;
         cache_t cache_;
         std::list<Arguments> usage_tracker_;
+        int counter = 0;
 };
 
 
@@ -51,6 +56,7 @@ R lru_cache<Size, R, Args...>::operator () (Args... arg_list)
             usage_tracker_.push_back(tuple_ele);
             list_it_ = --std::end(usage_tracker_);
         }
+        ++counter;
     }
     else {
         if constexpr(Size::type) {
@@ -84,4 +90,10 @@ void lru_cache<Size, R, Args...>::flush_cache()
 
      // Clear the bookkeeping 
     if constexpr(Size::type) { usage_tracker_.clear(); }
+}
+
+template<typename Size, typename R, typename ...Args>
+lru_cache<Size, R, Args...>::~lru_cache() 
+{
+    std::cout << "\tHits for LRU : " << counter << "\n";
 }

@@ -9,7 +9,8 @@
 
 #include "lru_cache.hpp"
 #include "mru_cache.hpp"
-#include "random_cache.hpp"
+#include "lfu_cache.hpp"
+#include "mfu_cache.hpp"
 
 namespace policy
 {
@@ -103,7 +104,9 @@ class my_cache
     // TODO: Add more cache policies
     using selected_cache_t = static_switch<Policy::type,
                                            lru_cache<Size, R, Args...>,
-                                           mru_cache<Size, R, Args...>
+                                           mru_cache<Size, R, Args...>,
+                                           lfu_cache<Size, R, Args...>,
+                                           mfu_cache<Size, R, Args...>
                                            >;
     public:
         explicit my_cache(std::function<R(Args...)> f, Policy, Size&& obj = Size()) :

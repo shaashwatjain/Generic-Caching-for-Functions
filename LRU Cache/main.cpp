@@ -1,18 +1,7 @@
 #include <iostream>
-#include"cache.hpp"
+#include "cache.hpp"
+#include "test_functions.hpp"
 #include <chrono>
-
-// template<typename R, typename... A>
-// R ret(R(*)(A...));
-
-// template<typename C, typename R, typename... A>
-// R ret(R(C::*)(A...));
-
-// template<typename T>
-// void print_name(T f)
-// {
-//     printf("%s\n", typeid(decltype(ret(f))).name());
-// }
 
 class A {
     int i;
@@ -20,16 +9,6 @@ class A {
   public:
     A(int i, int b): i{i}, b{b} {}
     bool operator == (const A& rhs) const {
-        return i == rhs.i && b == rhs.b;
-    }
-};
-
-class B {
-    int i;
-    int b;
-  public:
-    B(int i, int b): i{i}, b{b} {}
-    bool operator == (const B& rhs) const {
         return i == rhs.i && b == rhs.b;
     }
 };
@@ -42,88 +21,72 @@ class std::hash<A> {
     }
 };
 
-// int test() {return 1;}
-long long f_int(int x) { return x * x; }
-float f_float(int x, int y) { return 0.f; }
-float test(A u) {return 0.f;}
-// float test(B u) {return 0.f;}
-// void test(A u) {return;}
-
-// struct X { int f(int x, float y) { return 0; } };
-
-int main() {
+template<typename wrapped_func>
+void test_case(wrapped_func& _func)
+{
     auto start = std::chrono::high_resolution_clock::now();
-
-    A n{1, 2}, m{3, 4}, l{5, 6};
-    // n = m;
-    std::function o{test};
-    std::function x{f_float};
-    // cache<decltype(o()), > &p {new lru_cache{o}};
-    my_cache cached_o{o, policy::LRU_CACHE()};
-    // my_cache cached_o{o, policy::LRU_CACHE(), cache_size::RESTRICTED<2>()};
-    // my_cache cached_o{o, policy::MRU_CACHE()};
-    // my_cache cached_o{o, policy::MRU_CACHE(), cache_size::RESTRICTED<2>()};
-    cached_o(n);  // Miss
-    cached_o(m);  // Miss
-    cached_o(l);  // Miss
-    // ----
-    cached_o(m);  // Miss
-    cached_o(n);  // Hit
-    cached_o.flush_cache();
-    cached_o(m);  // Miss
-    cached_o(m);  // Hit
-    // delete p;
-    // // ----------------------
-    // std::function<decltype(f_int)> y{f_int};
-    // // std::function<decltype(f_float)> x{f_float};
-    // auto z = lru_cache{y};
-    // // lru_cache{x};
-
-    // for (int i = 5000; i < 10000; ++i)
-    //     // f_int(i);
-    //     z(i) ;
-
-    // // for flushing (clearing) the cache
-    // z.Flush_Lru();
-    // std::cout << "here" << '\n';
-
-    // for (int i = 5000; i < 10000; ++i)
-    //     // f_int(i);
-    //     z(i) ;
-
-    /*  ##################################################
-        # uncomment this to run the computation testcase #
-        ################################################## */
-    // long long int val;
-    // std::vector<long long int>v;
-    // for (int i = 0; i < 100000; ++i) {
-    //     // f_int(i);
-    //     val = i;
-    //     val <<= 50;
-    //     val += 1e8;
-    //     v.push_back(val);
-    //     z(val);
-    //     // f_int(val);
-    // }
-    // // for(int i =0;i<100;i++)
-    // // {
-    // //     std::cout << v[i]<< '\t';
-    // // }
-    // // std::cout << '\n';
-    //
-    // // z.Flush_Lru();
-    //
-    //
-    // for (int i = 0; i<100000; ++i) {
-    //     // val = i;
-    //     // val<<=50;
-    //     // val+=1e8;
-    //     // f_int(val);
-    //     z(v[i]);
-    // }
+    test_case_gen(_func);
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = finish - start;
     std::cout << "Elapsed time: " << elapsed.count() << " s\n";
+}
 
+template<typename func>
+void test_function(func& _func)
+{
+    using namespace std;
+    {
+        cout << "For non-cached function :\n\t";
+        test_case(_func);
+    }
+    {
+        my_cache cached_func_lru{_func,policy::LRU_CACHE()};
+        cout << "For LRU cached function (unlimited size) :\n\t";
+        test_case(cached_func_lru);
+    }
+    {    
+        my_cache cached_func_lru_limit{_func,policy::LRU_CACHE(), cache_size::RESTRICTED<200>()} ;
+        cout << "For LRU cached function (limited size) :\n\t";
+        test_case(cached_func_lru_limit);
+    }
+    {
+        my_cache cached_func_mru{_func,policy::MRU_CACHE()};
+        cout << "For MRU cached function (unlimited size) :\n\t";
+        test_case(cached_func_mru);
+    }
+    {
+        my_cache cached_func_mru_limit{_func,policy::MRU_CACHE(),  cache_size::RESTRICTED<200>()};
+        cout << "For MRU cached function (limited size) :\n\t";
+        test_case(cached_func_mru_limit);
+    }
+    {
+        my_cache cached_func_lfu{_func,policy::LFU_CACHE()};
+        cout << "For LFU cached function (unlimited size) :\n\t";
+        test_case(cached_func_lfu);
+    }
+    {    
+        my_cache cached_func_lfu_limit{_func,policy::LFU_CACHE(), cache_size::RESTRICTED<200>()} ;
+        cout << "For LFU cached function (limited size) :\n\t";
+        test_case(cached_func_lfu_limit);
+    }
+    {
+        my_cache cached_func_mfu{_func,policy::MFU_CACHE()};
+        cout << "For MFU cached function (unlimited size) :\n\t";
+        test_case(cached_func_mfu);
+    }
+    {    
+        my_cache cached_func_mfu_limit{_func,policy::MFU_CACHE(), cache_size::RESTRICTED<200>()} ;
+        cout << "For MFU cached function (limited size) :\n\t";
+        test_case(cached_func_mfu_limit);
+    }
+}
+
+int main() {
+    std::cout << "\n" << "For Mathematical computation : \n";
+    std::function comp{test_case_compute};
+    test_function(comp);
+    std::cout << "\n\n" << "For heavy header return computation : \n";
+    std::function http{http_header_gen};
+    test_function(http);
     return 0;
 }
