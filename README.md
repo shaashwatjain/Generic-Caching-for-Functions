@@ -51,6 +51,12 @@ Use the C++20 standard
     and decrement operators.
 *   Never overload "&&", "||", or ",".
 
+`-fstack-protector-all`  :   
+Stack smashing protector
+
+`-fstack-clash-protection`  :  
+Increased reliability of stack overflow detection
+
 `-g`  :  
 Generate debugging information
 
