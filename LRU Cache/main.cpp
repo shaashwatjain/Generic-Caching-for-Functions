@@ -88,5 +88,8 @@ int main() {
     std::cout << "\n\n" << "For heavy header return computation : \n";
     std::function http{http_header_gen};
     test_function(http);
+    std::cout << "\n\n" << "For shared pointer return computation : \n";
+    std::function http_ptr{http_header_gen_ptr};
+    test_function(http_ptr);
     return 0;
 }
