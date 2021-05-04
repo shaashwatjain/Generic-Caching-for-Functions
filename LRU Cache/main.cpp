@@ -79,6 +79,16 @@ void test_function(func& _func)
         cout << "For MFU cached function (limited size) :\n\t";
         test_case(cached_func_mfu_limit);
     }
+    {
+        my_cache cached_func_random{_func,policy::RANDOM_CACHE()};
+        cout << "For Random cached function (unlimited size) :\n\t";
+        test_case(cached_func_random);
+    }
+    {    
+        my_cache cached_func_random_limit{_func,policy::RANDOM_CACHE(), cache_size::RESTRICTED<200>()} ;
+        cout << "For Random cached function (limited size) :\n\t";
+        test_case(cached_func_random_limit);
+    }
 }
 
 int main() {
