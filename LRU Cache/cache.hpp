@@ -11,6 +11,7 @@
 #include "mru_cache.hpp"
 #include "lfu_cache.hpp"
 #include "mfu_cache.hpp"
+#include "random_cache.hpp"
 
 namespace policy
 {
@@ -35,6 +36,10 @@ namespace policy
         enum {type = 3};
     };
 
+    struct RANDOM_CACHE : CACHE_POLICY
+    {
+        enum {type = 4};
+    };
 } // namespace Policy
 
 namespace cache_size
@@ -106,7 +111,8 @@ class my_cache
                                            lru_cache<Size, R, Args...>,
                                            mru_cache<Size, R, Args...>,
                                            lfu_cache<Size, R, Args...>,
-                                           mfu_cache<Size, R, Args...>
+                                           mfu_cache<Size, R, Args...>,
+                                           random_cache<Size, R, Args...>
                                            >;
     public:
         explicit my_cache(std::function<R(Args...)> f, Policy, Size&& obj = Size()) :
