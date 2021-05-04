@@ -17,7 +17,7 @@ namespace policy
         enum {type = 0};
     };
 
-    struct MRU_CACHE 
+    struct MRU_CACHE
     {
         enum {type = 1};
     };

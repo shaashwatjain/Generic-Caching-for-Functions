@@ -15,8 +15,9 @@
 // }
 
 class A {
-    int i; int b;
-    public:
+    int i;
+    int b;
+  public:
     A(int i, int b): i{i}, b{b} {}
     bool operator == (const A& rhs) const {
         return i == rhs.i && b == rhs.b;
@@ -25,9 +26,9 @@ class A {
 
 template<>
 class std::hash<A> {
-	public:
+  public:
     std::size_t operator () (const A& obj) const {
-		return 0;
+        return 0;
     }
 };
 
@@ -77,9 +78,9 @@ int main() {
     //     // f_int(i);
     //     z(i) ;
 
-/* ##################################################
- * # uncomment this to run the computation testcase #
- * ################################################## */
+    /*  ##################################################
+        # uncomment this to run the computation testcase #
+        ################################################## */
     // long long int val;
     // std::vector<long long int>v;
     // for (int i = 0; i < 100000; ++i) {
