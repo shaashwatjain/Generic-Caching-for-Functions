@@ -12,7 +12,7 @@ class lfu_cache {
     // Creating type alias for complex types
     using Arguments = std::tuple<Args...>;
     using key_value_t = std::pair<Arguments, R>;
-	using map_iterator = typename std::multimap<int, key_value_t>::iterator;
+	using map_iterator = typename std::multimap<std::size_t, key_value_t>::iterator;
     using cache_t = std::unordered_map<Arguments, map_iterator, internal_cache::tuple_hasher>;
 
     public:
@@ -24,7 +24,7 @@ class lfu_cache {
 
     private:
         std::function<R(Args...)> func_;
-        std::multimap<int, key_value_t> freq_map;
+        std::multimap<std::size_t, key_value_t> freq_map;
         cache_t cache_;
         std::size_t counter;
 };
@@ -58,8 +58,8 @@ R lfu_cache<Size, R, Args...>::operator () (Args... arg_list)
         {
             if (cache_.size() == Size::cache_size_)
             {
-                cache_.erase(freq_map.begin()->second.first);
-                freq_map.erase(freq_map.begin());
+                cache_.erase(freq_map.begin()->second.first);  // Eviction by Key
+                freq_map.erase(freq_map.begin());  // Eviction by Iterator
             }
         }
         R value = func_(arg_list...);
@@ -73,6 +73,9 @@ template<typename Size, typename R, typename ...Args>
 void lfu_cache<Size, R, Args...>::flush_cache()
 {
     cache_.clear();  // Clear the cache
+
+    // Clear the bookkeeping 
+    if constexpr(Size::type) { freq_map.clear(); }
 }
 
 template<typename Size, typename R, typename ...Args>
