@@ -38,6 +38,19 @@ constexpr bool Hashable()
 template<typename... T>
 concept Hashable_Types = Hashable<T...>();
 
+
+template<typename Arg, typename... Args>
+    requires std::equality_comparable<Arg>
+constexpr bool Equality_Comparable() 
+{ 
+    if constexpr(sizeof...(Args) != 0U)
+        Equality_Comparable<Args...>();
+    return true;
+}
+
+template<typename... T>
+concept Equality_Comparable_Types = Equality_Comparable<T...>();
+
 template<typename... T>
 concept Arguments = sizeof...(T) != 0;
 
@@ -60,7 +73,7 @@ concept Non_Void_Return = !std::is_void_v<T>;
 
 
 template<typename Policy, typename Size = cache_size::UNLIMITED, typename R = int, typename ...Args>
-    requires Cache_Policy<Policy> && Cache_Size<Size> && Non_Void_Return<R> && Arguments<Args...> && Hashable_Types<Args...>
+    requires Cache_Policy<Policy> && Cache_Size<Size> && Non_Void_Return<R> && Arguments<Args...> && Equality_Comparable_Types<Args...> && Hashable_Types<Args...>
 class my_cache
 {
     using selected_cache_t = static_switch<Policy::type,
