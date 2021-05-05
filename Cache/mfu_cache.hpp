@@ -81,5 +81,5 @@ void mfu_cache<Size, R, Args...>::flush_cache()
 template<typename Size, typename R, typename ...Args>
 mfu_cache<Size, R, Args...>::~mfu_cache() 
 {
-    std::cout << "\tHits for MRU : " << counter << "\n";
+    std::cout << "\tHits for MFU : " << counter << "\n";
 }
